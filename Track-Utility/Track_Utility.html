@@ -13,7 +13,7 @@
   --bg:#f4f2ee;--surface:#ffffff;--surface-soft:#fbfbfc;--line:#e7e8eb;--line-strong:#d9dbe0;
   --text:#17181b;--muted:#7a7d85;--muted2:#a0a3aa;--accent:#111318;--accent-soft:#f0f1f3;
   --brand:#a8632c;--brand-soft:#f1e6da;
-  --shadow:0 18px 60px rgba(18,20,24,.08);--shadow-sm:0 8px 24px rgba(18,20,24,.06);
+  --shadow:0 10px 30px rgba(18,20,24,.055);--shadow-sm:0 5px 16px rgba(18,20,24,.04);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;position:relative}
@@ -42,7 +42,7 @@ textarea{min-height:112px;resize:vertical;line-height:1.6}.source-wrap{position:
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}button{appearance:none;border:1px solid var(--line-strong);border-radius:11px;padding:10px 13px;font:inherit;font-weight:800;cursor:pointer;color:#303238;background:#fff;transition:transform .15s,border .15s,background .15s,box-shadow .15s}
 button:hover{transform:translateY(-1px);border-color:#bfc2c8;box-shadow:0 6px 16px rgba(0,0,0,.05)}button.primary{background:#17181b;border-color:#17181b;color:#fff;box-shadow:0 10px 22px rgba(23,24,27,.12)}button.emphasis{background:var(--accent-soft);color:var(--text);border-color:var(--line-strong);font-weight:850}button.emphasis:hover{background:#e7e8eb}button.good{background:var(--brand-soft);color:#8a5525;border-color:#e4cbaf}button.ghost{background:transparent;color:#8a8d94;border-color:transparent}
 .result{display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}.result.show{display:block;animation:rise .22s ease-out}@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.manual-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.stack{display:grid;gap:10px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step-list{display:grid;gap:8px}.step-row{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}.step-num{width:28px;height:28px;border-radius:50%;background:#f0f1f3;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:850;color:#4d5158}.manual-output{display:grid;gap:12px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.manual-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.stack{display:grid;gap:10px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step-list{display:grid;gap:8px}.step-row{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}.step-num{width:28px;height:28px;border-radius:50%;background:#f0f1f3;border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:850;color:#4d5158}.manual-output{display:grid;gap:12px}.manual-result{display:none;border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--surface);box-shadow:var(--shadow-sm)}.manual-result.show{display:block;animation:rise .22s ease-out}.manual-result .panel-head{margin-bottom:12px}
 
 /* 修正箇所1: .manual-cardのbackgroundを var(--accent-soft) から var(--surface-soft) に変更 */
 .manual-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--surface-soft)}
@@ -170,7 +170,9 @@ details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer
         </div>
       </div>
 
-      <div class="manual-output">
+      <div class="manual-result" id="manualResult">
+        <div class="panel-head"><div><h3 class="panel-title">整形結果</h3><div class="panel-note">必要に応じて内容を編集できます。</div></div></div>
+        <div class="manual-output" id="manualOutput">
         <div class="manual-card"><div class="manual-card-head"><div class="k">名前</div><button class="secondary" id="manualCopyName">コピー</button></div><div class="v placeholder" id="manualName">—</div></div>
         <div class="manual-card"><div class="manual-card-head"><div class="k">アーティスト</div><button class="secondary" id="manualCopyArtist">コピー</button></div><div class="v placeholder" id="manualArtist">—</div></div>
         <div class="manual-card"><div class="manual-card-head"><div class="k">タイトル</div><button class="secondary" id="manualCopyTitle">コピー</button></div><div class="v placeholder" id="manualTitle">—</div></div>
@@ -179,6 +181,7 @@ details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer
           <div class="v placeholder" id="manualCombined">—</div>
         </div>
         <div class="subtle" id="manualStatus"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -287,13 +290,13 @@ function manualFormat(){
   let title=tracks.join(' vs. ');
   if(creator) title += ` (${creator} ${suffix})`;
   const artist=artists.join(' vs. ');
-  $('manualName').textContent=title;$('manualTitle').textContent=title;$('manualArtist').textContent=artist;$('manualCombined').textContent = artist && title ? `${artist} - ${title}` : (artist || title);
+  $('manualName').textContent=title;$('manualTitle').textContent=title;$('manualArtist').textContent=artist;$('manualCombined').textContent = artist && title ? `${artist} - ${title}` : (artist || title);$('manualResult').classList.add('show');
   [$('manualName'),$('manualTitle'),$('manualArtist'),$('manualCombined')].forEach(el=>el.classList.remove('placeholder'));
   $('manualStatus').textContent='整形が完了しました。必要に応じて入力内容を修正し、再度「整形する」を実行してください。';
 }
 function manualClear(){
   document.querySelectorAll('.manual-artist,.manual-track').forEach(x=>x.value='');$('manualCreator').value='';$('manualSuffix').value='Mashup';
-  $('manualName').textContent='—';$('manualTitle').textContent='—';$('manualArtist').textContent='—';$('manualCombined').textContent='—';$('manualStatus').textContent='';
+  $('manualName').textContent='—';$('manualTitle').textContent='—';$('manualArtist').textContent='—';$('manualCombined').textContent='—';$('manualStatus').textContent='';$('manualResult').classList.remove('show');
   [$('manualName'),$('manualTitle'),$('manualArtist'),$('manualCombined')].forEach(el=>el.classList.add('placeholder'));
 }
 function manualSample(){
