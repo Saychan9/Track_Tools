@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Track Utility [楽曲ファイル成形ツール]</title>
+<title>Track Utility [楽曲ファイル整形ツール]</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@ body:after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;mix-
 .site-head{display:flex;align-items:flex-end;gap:24px;padding:6px 0 22px;margin-bottom:30px;border-bottom:1px solid var(--line-strong);position:relative}
 .site-head:after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:3px;background:repeating-linear-gradient(90deg,var(--line-strong) 0 6px,transparent 6px 13px)}
 .wordmark{display:flex;align-items:center;gap:14px}
-.mark{width:38px;height:38px;flex:none;color:var(--brand)}
+.mark{width:38px;height:38px;flex:none;overflow:hidden;border-radius:10px;color:var(--brand)}
 .mark svg{display:block;width:100%;height:100%}
 .wordmark-text{display:flex;flex-direction:column;gap:3px}
 .kicker{font-family:"Space Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--brand);font-weight:700}
@@ -129,7 +129,7 @@ details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer
 
   <section class="panel" id="manualTool">
     <div class="panel-head">
-      <div><h3 class="panel-title"><span class="num">02</span>手動入力・成形</h3><div class="panel-note">アーティスト・曲名・作成者を入力し、楽曲情報を成形します。</div></div>
+      <div><h3 class="panel-title"><span class="num">02</span>手動入力・整形</h3><div class="panel-note">アーティスト・曲名・作成者を入力し、楽曲情報を整形します。</div></div>
       <div class="panel-note">アーティストは最大4組まで入力できます。</div>
     </div>
     <div class="manual-grid">
@@ -164,7 +164,7 @@ details{border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer
           </div>
         </div>
         <div class="actions">
-          <button class="primary" id="manualFormat">成形する</button>
+          <button class="primary" id="manualFormat">整形する</button>
           <button class="secondary" id="manualSample">サンプルを入力</button>
           <button class="ghost" id="manualClear">クリア</button>
         </div>
@@ -289,7 +289,7 @@ function manualFormat(){
   const artist=artists.join(' vs. ');
   $('manualName').textContent=title;$('manualTitle').textContent=title;$('manualArtist').textContent=artist;$('manualCombined').textContent = artist && title ? `${artist} - ${title}` : (artist || title);
   [$('manualName'),$('manualTitle'),$('manualArtist'),$('manualCombined')].forEach(el=>el.classList.remove('placeholder'));
-  $('manualStatus').textContent='成形が完了しました。必要に応じて入力内容を修正し、再度「成形する」を実行してください。';
+  $('manualStatus').textContent='整形が完了しました。必要に応じて入力内容を修正し、再度「整形する」を実行してください。';
 }
 function manualClear(){
   document.querySelectorAll('.manual-artist,.manual-track').forEach(x=>x.value='');$('manualCreator').value='';$('manualSuffix').value='Mashup';
@@ -319,7 +319,7 @@ $('source').addEventListener('input',updateCount);
 function updateCount(){$('charcount').textContent=$('source').value.length+' chars';}
 function manualCopyGuarded(sourceId,label){
   const el=$(sourceId);
-  if(el.classList.contains('placeholder')){ $('manualStatus').textContent='先に「成形する」を実行してください。'; return; }
+  if(el.classList.contains('placeholder')){ $('manualStatus').textContent='先に「整形する」を実行してください。'; return; }
   copyText(el.textContent);$('manualStatus').textContent=label+'をコピーしました。';
 }
 $('manualFormat').addEventListener('click',manualFormat);$('manualSample').addEventListener('click',manualSample);$('manualClear').addEventListener('click',manualClear);
